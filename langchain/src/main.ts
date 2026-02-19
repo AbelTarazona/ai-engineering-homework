@@ -2,6 +2,7 @@ import "dotenv/config";
 import { ChatOpenAI } from "@langchain/openai";
 import { OpenAIEmbeddings } from "@langchain/openai";
 import { HumanMessage, SystemMessage } from "@langchain/core/messages";
+import { TavilySearchAPIRetriever } from "@langchain/community/retrievers/tavily_search_api";
 import { createClient } from "@supabase/supabase-js";
 import * as readline from "node:readline/promises";
 import { stdin as input, stdout as output } from "node:process";
@@ -24,7 +25,6 @@ async function main() {
   const embeddings = new OpenAIEmbeddings({
     model: "text-embedding-3-small",
   });
-
   const model = new ChatOpenAI({
     model: "gpt-4.1-mini",
     temperature: 0.7,
@@ -49,9 +49,27 @@ async function main() {
     .map((memory, index) => `[${index + 1}] ${memory.content ?? ""}`)
     .join("\n");
 
+  let tavilyContext = "";
+  if (process.env.TAVILY_API_KEY) {
+    const tavilyRetriever = new TavilySearchAPIRetriever({
+      k: 5,
+      apiKey: process.env.TAVILY_API_KEY,
+    });
+    const tavilyDocs = await tavilyRetriever._getRelevantDocuments(userPrompt);
+    tavilyContext = tavilyDocs
+      .map((doc, index) => {
+        const metadata = doc.metadata ?? {};
+        const title = metadata.title ? ` - ${metadata.title}` : "";
+        const url = metadata.url ? ` (${metadata.url})` : "";
+        return `[T${index + 1}]${title}${url} ${doc.pageContent}`.trim();
+      })
+      .join("\n");
+  }
+
   const systemPrompt =
     "Responde usando solo el contexto. Si el contexto no contiene la respuesta, di que no lo sabes." +
-    `\n\nContexto:\n${context}`;
+    `\n\nContexto:\n${context}` +
+    (tavilyContext ? `\n\nContexto web:\n${tavilyContext}` : "");
 
   const response = await model.invoke([
     new SystemMessage(systemPrompt),
