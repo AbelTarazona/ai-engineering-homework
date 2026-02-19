@@ -17,6 +17,16 @@ export async function runChatwootWebhookServer() {
 
   app.post("/chatwoot", async (req, res) => {
     try {
+      const payload = req.body as ChatwootWebhookPayload;
+      const senderType = (req.body as { sender?: { type?: string } })?.sender?.type;
+      const conversationId = payload.conversation?.id;
+      const messageType = payload.message_type;
+      const event = payload.event;
+      const contentPreview = payload.content?.slice(0, 120) ?? "";
+      console.log(
+        `[chatwoot] event=${event} message_type=${messageType} sender_type=${senderType} conversation_id=${conversationId} content="${contentPreview}"`
+      );
+
       const secret = process.env.CHATWOOT_WEBHOOK_SECRET;
       if (secret) {
         const rawBody = (req as RawBodyRequest).rawBody ?? Buffer.from("");
@@ -27,14 +37,13 @@ export async function runChatwootWebhookServer() {
         }
       }
 
-      const payload = req.body as ChatwootWebhookPayload;
       if (payload.event !== "message_created" || payload.message_type !== "incoming") {
         res.status(200).json({ status: "ignored" });
         return;
       }
 
-      const conversationId = payload.conversation?.id;
-      const content = payload.content?.trim();
+      const rawContent = payload.content ?? "";
+      const content = rawContent.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
       if (!conversationId || !content) {
         res.status(400).json({ error: "Payload incompleto" });
         return;
