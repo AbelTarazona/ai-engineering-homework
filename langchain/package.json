@@ -1,9 +1,11 @@
 {
   "name": "langchain",
   "version": "1.0.0",
+  "type": "module",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "tsx src/main.ts"
   },
   "keywords": [],
   "author": "",
@@ -13,5 +15,12 @@
     "@types/node": "^25.3.0",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "@langchain/openai": "^1.2.8",
+    "@supabase/supabase-js": "^2.56.0",
+    "dotenv": "^17.3.1",
+    "langchain": "^1.2.25",
+    "zod": "^4.3.6"
   }
 }
