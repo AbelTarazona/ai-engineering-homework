@@ -1,9 +1,12 @@
 # Integración con Chatwoot Cloud
 
+> ⚡ **Opción recomendada:** Usa [Supabase Edge Function](./SUPABASE_EDGE_FUNCTION.md) para una URL permanente y servidor 24/7 sin ngrok.
+
 ## 1. Requisitos previos
 
 - Cuenta en [Chatwoot Cloud](https://www.chatwoot.com/)
-- [ngrok](https://ngrok.com/) instalado (descarga desde https://ngrok.com/download)
+- **OPCIÓN A (Recomendada)**: Supabase con Edge Functions configurada → [Ver instrucciones](./SUPABASE_EDGE_FUNCTION.md)
+- **OPCIÓN B (Local)**: [ngrok](https://ngrok.com/) instalado (descarga desde https://ngrok.com/download)
 - Variables de entorno configuradas en `.env`:
 
 ```env

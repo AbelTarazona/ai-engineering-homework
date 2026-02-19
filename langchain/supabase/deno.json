@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "target": "es2020",
+    "lib": [
+      "es2020",
+      "dom",
+      "dom.iterable"
+    ],
+    "jsx": "react-jsx",
+    "jsxImportSource": "preact"
+  },
+  "imports": {
+    "std/": "https://deno.land/std@0.208.0/",
+    "@langchain/": "npm:@langchain/",
+    "@supabase/supabase-js": "npm:@supabase/supabase-js"
+  }
+}

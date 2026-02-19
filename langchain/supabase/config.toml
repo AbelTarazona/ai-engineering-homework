@@ -1,0 +1,9 @@
+# Supabase Configuration
+
+[project]
+name = "ai-engineer"
+description = "AI Engineer Chatbot with Chatwoot Integration"
+
+[functions]
+memory = 1024
+timeout = 300
